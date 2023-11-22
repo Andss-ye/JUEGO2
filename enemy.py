@@ -25,6 +25,7 @@ class Enemy(pygame.sprite.Sprite):
         self.health = 20
         self.last_shoot = pygame.time.get_ticks()
         self.shoot_delay = 1000
+        self.increased_health = False
 
     def update(self):
         dx = self.player_rect.centerx - self.rect.centerx

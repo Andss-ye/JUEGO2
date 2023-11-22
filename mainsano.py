@@ -35,7 +35,9 @@ score_font = pygame.font.Font(None, 36)  # Fuente para la score
 
 player_score = 0
 
-enemy_health_increase_count = 0
+health_increase_counter = 1
+
+health_increase_amount = 20
 
 running = True
 
@@ -65,12 +67,6 @@ while running:
             elif event.key == pygame.K_UP or event.key == pygame.K_DOWN:  # Agregado: detener movimiento vertical
                 player.stop()
         
-    #Verificar la puntuacion del jugador
-    if player_score >= 100:
-        # Aumenta la vida del enemigo en 20 puntos
-        enemy.increase_health(20)
-        # Reinicia el puntaje del jugador para seguir acumulando
-        player_score -= 100
 
     all_sprites.update()
 
@@ -98,7 +94,7 @@ while running:
 
     hits = pygame.sprite.groupcollide(all_enemys, all_bullets, False, True)
     for enemy, bullets in hits.items():
-        enemy.take_damage(10)
+        enemy.take_damage(20)
         if enemy.health <= 0:
             enemy.kill()
             score += 10  # Incrementa la score cuando un enemigo es eliminado
@@ -136,11 +132,15 @@ while running:
         pygame.time.delay(2500)
         running = False
     
-    if score >= 300 * (enemy_health_increase_count + 1):
-        for enemy in all_enemys:
-            enemy.increase_health(20)
+    if score >= 100 * health_increase_counter:
+            for enemy in all_enemys:
+                if not enemy.increased_health:
+                    enemy.increase_health(health_increase_amount)
+                    enemy.increased_health = True
 
-    enemy_health_increase_count += 1
+            health_increase_counter += 1
+            health_increase_amount += 20  # Aumenta la cantidad de aumento de salud
+
 
     pygame.display.flip()
 
